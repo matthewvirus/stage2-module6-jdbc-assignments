@@ -1,5 +1,6 @@
 package jdbc;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,32 +17,15 @@ import java.util.List;
 public class SimpleJDBCRepository {
 
     private CustomDataSource customDataSource = CustomDataSource.getInstance();
+    private PreparedStatement ps = null;
+    private Statement st = null;
 
-    private static final String createUserSQL = """
-            INSERT INTO myusers(
-            firstname, lastname, age)
-            VALUES (?, ?, ?);
-            """;
-    private static final String updateUserSQL = """
-            UPDATE myusers
-            SET firstname=?, lastname=?, age=?
-            WHERE id = ?
-            """;
-    private static final String deleteUser = """
-            DELETE FROM myusers
-            WHERE id = ?
-            """;
-    private static final String findUserByIdSQL = """
-            SELECT id, firstname, lastname, age FROM myusers
-            WHERE id = ?
-            """;
-    private static final String findUserByNameSQL = """
-            SELECT id, firstname, lastname, age FROM myusers
-            WHERE firstname LIKE CONCAT('%', ?, '%')
-            """;
-    private static final String findAllUserSQL = """
-            SELECT id, firstname, lastname, age FROM myusers
-            """;
+    private static final String createUserSQL = "INSERT INTO myusers (firstName, lastName, age) VALUES (?, ?, ?);";;
+    private static final String updateUserSQL = "UPDATE myusers SET firstname = ?, lastname = ?, age= ? WHERE id=?;";
+    private static final String deleteUser = "DELETE FROM myusers WHERE id = ?";
+    private static final String findUserByIdSQL = "SELECT * FROM myusers WHERE id = ?;";
+    private static final String findUserByNameSQL = "SELECT * FROM myusers WHERE firstName =?;";
+    private static final String findAllUserSQL = "SELECT * FROM myusers ORDER BY id ASC;";
 
     public Long createUser(User user) {
         Long id = null;
@@ -123,7 +107,7 @@ public class SimpleJDBCRepository {
         return null;
     }
 
-    public void deleteUser(Long userId) {
+    private void deleteUser(Long userId) {
         try (Connection connection = customDataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(deleteUser)) {
             statement.setLong(1, userId);
