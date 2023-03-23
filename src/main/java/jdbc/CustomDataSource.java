@@ -21,31 +21,41 @@ public class CustomDataSource implements DataSource {
     private final String url;
     private final String name;
     private final String password;
+    private static final Object lock = new Object();
 
     private CustomDataSource(String driver, String url, String password, String name) {
         this.driver = driver;
         this.url = url;
         this.name = name;
         this.password = password;
+        instance = this;
     }
 
     public static CustomDataSource getInstance() {
-        if (instance == null) {
-            try {
-                Properties properties = new Properties();
-                properties.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
-                instance = new CustomDataSource(
-                        properties.getProperty("postgres.driver"),
-                        properties.getProperty("postgres.url"),
-                        properties.getProperty("postgres.name"),
-                        properties.getProperty("postgres.password")
+        public static CustomDataSource getInstance() {
+            if (instance == null) {
+                synchronized (lock) {
+                    if (instance == null) {
+                        try {
+                            Properties properties = new Properties();
+                            properties.load(
+                                    CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties")
+                            );
+                            instance = new CustomDataSource(
+                                    properties.getProperty("postgres.driver"),
+                                    properties.getProperty("postgres.url"),
+                                    properties.getProperty("postgres.name"),
+                                    properties.getProperty("postgres.password")
 
-                );
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                            );
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
             }
+            return instance;
         }
-        return instance;
     }
 
     @Override
