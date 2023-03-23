@@ -32,30 +32,28 @@ public class CustomDataSource implements DataSource {
     }
 
     public static CustomDataSource getInstance() {
-        public static CustomDataSource getInstance() {
-            if (instance == null) {
-                synchronized (lock) {
-                    if (instance == null) {
-                        try {
-                            Properties properties = new Properties();
-                            properties.load(
-                                    CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties")
-                            );
-                            instance = new CustomDataSource(
-                                    properties.getProperty("postgres.driver"),
-                                    properties.getProperty("postgres.url"),
-                                    properties.getProperty("postgres.name"),
-                                    properties.getProperty("postgres.password")
+        if (instance == null) {
+            synchronized (lock) {
+                if (instance == null) {
+                    try {
+                        Properties properties = new Properties();
+                        properties.load(
+                                CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties")
+                        );
+                        instance = new CustomDataSource(
+                                properties.getProperty("postgres.driver"),
+                                properties.getProperty("postgres.url"),
+                                properties.getProperty("postgres.name"),
+                                properties.getProperty("postgres.password")
 
-                            );
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        );
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
-            return instance;
         }
+        return instance;
     }
 
     @Override
