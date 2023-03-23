@@ -26,8 +26,8 @@ public class CustomDataSource implements DataSource {
     private CustomDataSource(String driver, String url, String password, String name) {
         this.driver = driver;
         this.url = url;
-        this.name = name;
         this.password = password;
+        this.name = name;
         instance = this;
     }
 
@@ -57,47 +57,49 @@ public class CustomDataSource implements DataSource {
     }
 
     @Override
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection() {
         return new CustomConnector().getConnection(url, name, password);
     }
 
     @Override
-    public Connection getConnection(String username, String password) throws SQLException {
-        return new CustomConnector().getConnection(url, username, password);
+    public Connection getConnection(String s, String s1) {
+        return new CustomConnector().getConnection(url, name, password);
     }
 
     @Override
     public PrintWriter getLogWriter() throws SQLException {
-        throw new SQLException("No log writer");
+        throw new SQLException();
     }
 
     @Override
-    public void setLogWriter(PrintWriter out) throws SQLException {
-        throw new SQLException("Can't set writer");
+    public void setLogWriter(PrintWriter printWriter) throws SQLException {
+        throw new SQLException();
+
     }
 
     @Override
-    public void setLoginTimeout(int seconds) throws SQLException {
-        throw new SQLException("Can't set timeout");
+    public void setLoginTimeout(int i) throws SQLException {
+        throw new SQLException();
+
     }
 
     @Override
     public int getLoginTimeout() throws SQLException {
-        throw new SQLException("No timeout");
+        throw new SQLException();
     }
 
     @Override
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        throw new SQLFeatureNotSupportedException("Can't get parent logger");
+        throw new SQLFeatureNotSupportedException();
     }
 
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        throw new SQLException("Can't unwrap");
+    public <T> T unwrap(Class<T> aClass) throws SQLException {
+        throw new SQLException();
     }
 
     @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    public boolean isWrapperFor(Class<?> aClass) throws SQLException {
         throw new SQLException();
     }
 }

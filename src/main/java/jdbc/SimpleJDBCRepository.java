@@ -15,28 +15,32 @@ import java.util.List;
 @NoArgsConstructor
 public class SimpleJDBCRepository {
 
-    private PreparedStatement ps = null;
-    private Statement st = null;
     private CustomDataSource customDataSource = CustomDataSource.getInstance();
 
     private static final String createUserSQL = """
-            INSERT INTO myusers (firstname, lastname, age) VALUES (?, ?, ?);
+            INSERT INTO myusers(
+            firstname, lastname, age)
+            VALUES (?, ?, ?);
             """;
     private static final String updateUserSQL = """
-            UPDATE myusers SET firstname=?, lastname=?, age=? 
-            WHERE id=?;
+            UPDATE myusers
+            SET firstname=?, lastname=?, age=?
+            WHERE id = ?
             """;
     private static final String deleteUser = """
-            DELETE FROM myusers WHERE id=?;
+            DELETE FROM myusers
+            WHERE id = ?
             """;
     private static final String findUserByIdSQL = """
-            SELECT * FROM myusers WHERE id=?;
+            SELECT id, firstname, lastname, age FROM myusers
+            WHERE id = ?
             """;
     private static final String findUserByNameSQL = """
-            SELECT * FROM myusers WHERE firstname = ?;
+            SELECT id, firstname, lastname, age FROM myusers
+            WHERE firstname LIKE CONCAT('%', ?, '%')
             """;
     private static final String findAllUserSQL = """
-            SELECT * FROM myusers;
+            SELECT id, firstname, lastname, age FROM myusers
             """;
 
     public Long createUser(User user) {
